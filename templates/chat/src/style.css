@@ -1,0 +1,14 @@
+:root { color-scheme: dark; --bg:#0b0d10; --fg:#e8eaed; --mut:#9aa0a6; --acc:#7cf0c5; --err:#ff6b6b; font-family: ui-sans-serif, system-ui, sans-serif; }
+body { margin:0; background:var(--bg); color:var(--fg); }
+#app { max-width: 860px; margin: 0 auto; padding: 24px 16px 48px; }
+h1 { margin: 0 0 4px; font-size: 1.6rem; } .idea { color: var(--mut); margin: 0 0 16px; }
+.keybox { display:flex; flex-wrap:wrap; gap:8px; align-items:center; padding:12px; border:1px solid #222; border-radius:10px; }
+.keybox input[type=password] { width: 260px; } .inline { display:inline-flex; gap:4px; align-items:center; }
+input, select, textarea, button { background:#14181d; color:var(--fg); border:1px solid #2a2f36; border-radius:8px; padding:8px; font:inherit; }
+button { cursor:pointer; background:#1d2a25; border-color:#2e4a3f; } button:disabled { opacity:.5; cursor:default; }
+.note { width:100%; margin:4px 0 0; color:var(--mut); font-size:.9rem; }
+#log { margin: 16px 0; display:flex; flex-direction:column; gap:10px; }
+.msg { padding:10px 12px; border-radius:10px; background:#12161b; white-space:pre-wrap; } .msg.user { background:#16202a; }
+.msg.error { border:1px solid var(--err); } .role { font-size:.75rem; color:var(--acc); margin-bottom:4px; }
+.meta { font-size:.8rem; color:var(--mut); margin-top:6px; word-break:break-word; }
+form { display:flex; gap:8px; } textarea { flex:1; } footer { margin-top:24px; color:var(--mut); font-size:.85rem; } a { color: var(--acc); }

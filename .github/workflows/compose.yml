@@ -1,0 +1,59 @@
+name: compose app
+# Triggered by grokhack.com /forge (workflow_dispatch via the Blockchains GitHub App) or by hand.
+# Creating repos in the Blockchains USER account needs a user token: add the FORGE_TOKEN secret
+# (fine-grained PAT owned by Blockchains: Administration RW, Contents RW, Pages RW, Workflows RW, Actions RW, Metadata R).
+on:
+  workflow_dispatch:
+    inputs:
+      idea: { description: "App idea (plain English)", required: true }
+      name: { description: "Repo name (slug)", required: true }
+      request_id: { description: "Request id from grokhack.com (used for results/<id>.json)", required: false, default: "" }
+permissions:
+  contents: write
+concurrency:
+  group: compose-${{ inputs.name }}
+  cancel-in-progress: false
+jobs:
+  compose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - name: Require FORGE_TOKEN
+        env: { FORGE_TOKEN: "${{ secrets.FORGE_TOKEN }}" }
+        run: |
+          if [ -z "$FORGE_TOKEN" ]; then
+            echo "::error::FORGE_TOKEN secret is not set. Repo creation in the Blockchains user account needs a Blockchains PAT (see README)."; exit 1
+          fi
+      - name: Install gitleaks
+        run: |
+          curl -sSfL https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/gitleaks_8.30.1_linux_x64.tar.gz | tar xz -C /usr/local/bin gitleaks
+      - name: Compose, create repo, wait for CI + Pages
+        id: compose
+        env:
+          GH_TOKEN: ${{ secrets.FORGE_TOKEN }}
+          IDEA: ${{ inputs.idea }}
+          NAME: ${{ inputs.name }}
+        run: |
+          git config --global user.name Blockchains
+          git config --global user.email Blockchains@users.noreply.github.com
+          gh auth setup-git
+          python3 forge/compose.py --idea "$IDEA" --name "$NAME" --create --wait > /tmp/result.json
+          cat /tmp/result.json
+      - name: Record result
+        if: always()
+        env:
+          RID: ${{ inputs.request_id }}
+          NAME: ${{ inputs.name }}
+        run: |
+          id="${RID:-$NAME-$(date -u +%Y%m%dT%H%M%SZ)}"
+          python3 - "$id" <<'PY'
+          import json, os, sys, datetime
+          rid = sys.argv[1]
+          try: res = json.load(open("/tmp/result.json")); res["status"] = "ok"
+          except Exception as e: res = {"status": "failed", "error": "compose step failed; see run log"}
+          res["request_id"] = rid; res["run_url"] = f"{os.environ['GITHUB_SERVER_URL']}/{os.environ['GITHUB_REPOSITORY']}/actions/runs/{os.environ['GITHUB_RUN_ID']}"
+          res["finished_at"] = datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
+          os.makedirs("results", exist_ok=True); json.dump(res, open(f"results/{rid}.json", "w"), indent=2)
+          PY
+          git add results && git commit -qm "result: $id" && git pull -q --rebase && git push -q || echo "nothing to record"
