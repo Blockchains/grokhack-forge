@@ -158,6 +158,9 @@ def compose(idea: str, name: str, index: str, out: str, owner: str, title: str |
         lines.append(f"- [{r['repo']} `{r['path']}` L{r['start']}-{r['end']}]({r['url']}) · {r.get('license')} · {r.get('stars')} stars · "
                      f"capabilities: {', '.join(r.get('capabilities', []))}")
     open(os.path.join(out, "PARTS.md"), "w").write("\n".join(lines) + "\n")
+    if plan["archetype"] == "chat":  # CI uses `npm ci` + the npm cache, both need a real lockfile
+        if not shutil.which("npm"): raise SystemExit("npm is required to lock the chat app's dependencies")
+        sh(["npm", "install", "--package-lock-only", "--ignore-scripts", "--no-audit", "--no-fund"], cwd=out)
     run_cmds = ("npm ci && npm run build && npm test && npm run e2e" if plan["archetype"] == "chat"
                 else "pip install -r requirements.txt && pytest -q && python -m app.e2e && python -m app.main")
     readme = f"""# {title}
