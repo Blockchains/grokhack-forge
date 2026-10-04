@@ -165,7 +165,7 @@ def compose(idea: str, name: str, index: str, out: str, owner: str, title: str |
                 "sdk_part": chosen["sdk"]["id"], "sdk_commit": chosen["sdk"]["commit"], "index_generated_at": chosen["index_generated_at"],
                 "reference_parts": [r["id"] for r in chosen["references"]]}
     json.dump(manifest, open(os.path.join(out, "forge.json"), "w"), indent=2)
-    lines = [f"# Integration parts used by {title}", "", f"Composed by [grokhack.com /forge](https://grokhack.com/forge) from "
+    lines = [f"# Integration parts used by {title}", "", f"Composed by [grokhack-forge](https://github.com/Blockchains/grokhack-forge) from "
              f"[Blockchains/grokhack-index](https://github.com/Blockchains/grokhack-index) (index generated {chosen['index_generated_at']}).", "",
              f"**Idea:** {idea}", "", f"**Archetype:** `{plan['archetype']}` · **Capabilities detected:** {', '.join(plan['capabilities'])}", "",
              "## Runtime dependency (installed, pinned to the indexed fork commit)", "",
@@ -189,7 +189,7 @@ def compose(idea: str, name: str, index: str, out: str, owner: str, title: str |
 
 {idea}
 
-**Live:** https://{owner.lower()}.github.io/{name}/ · composed by [grokhack.com /forge](https://grokhack.com/forge) · parts: [PARTS.md](PARTS.md) · manifest: [forge.json](forge.json)
+**Live:** https://{owner.lower()}.github.io/{name}/ · composed by [grokhack-forge](https://github.com/Blockchains/grokhack-forge) · parts: [PARTS.md](PARTS.md) · manifest: [forge.json](forge.json)
 
 - Archetype: `{plan['archetype']}` · capabilities: {', '.join(plan['capabilities'])}
 - Grok via {'Vercel AI SDK `@ai-sdk/xai` (browser, bring-your-own key; the key only goes to api.x.ai)' if plan['archetype']=='chat' else 'the official `xai-sdk` (gRPC) with structured output, run daily by GitHub Actions'}

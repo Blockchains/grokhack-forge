@@ -31,6 +31,6 @@ li{{margin:10px 0}}.sum{{margin:6px 0 0 12px;font-size:.92rem}}.tags{{color:#9aa
 <h1>{e(cfg["title"])}</h1><p class="mut">{e(cfg["idea"])}</p>{top}
 <h2>Releases in the last {collected["window_days"]} days ({len(collected["items"])} across {collected["repos_checked"]} repos)</h2><ul>{body}</ul>
 <p class="mut">Data generated {e(collected["generated_at"])}. {len(collected["errors"])} repos could not be read. Raw JSON: <a href="releases.json">releases.json</a> · <a href="digest.json">digest.json</a>.<br>
-Composed by <a href="https://grokhack.com/forge">grokhack.com /forge</a> from indexed Grok parts (<a href="{e(cfg["repo_url"])}/blob/main/PARTS.md">PARTS.md</a>).</p></body></html>"""
+Composed by <a href="https://github.com/Blockchains/grokhack-forge">grokhack-forge</a> from indexed Grok parts (<a href="{e(cfg["repo_url"])}/blob/main/PARTS.md">PARTS.md</a>).</p></body></html>"""
     open(f"{out}/index.html", "w").write(page)
     return f"{out}/index.html"

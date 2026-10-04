@@ -1,6 +1,6 @@
 # grokhack-forge
 
-The composer behind **[grokhack.com /forge](https://grokhack.com/forge)**: describe an app idea, get a working Grok app repo under
+The composer intended for a **grokhack.com /forge** page (not live yet; run it from the CLI or the workflow below): describe an app idea, get a working Grok app repo under
 [github.com/Blockchains](https://github.com/Blockchains) with CI and a GitHub Pages deploy link.
 
 ```
@@ -37,3 +37,22 @@ secret (fine-grained PAT owned by Blockchains); the workflow fails fast with a c
 CI composes one app of each archetype, builds and tests them (including the api.x.ai e2e) and runs gitleaks.
 
 MIT licence.
+
+## Configuration
+
+| Variable | Where | Purpose |
+|---|---|---|
+| `XAI_API_KEY` | env / repo secret | Used by the generated apps' tests and live e2e against api.x.ai. Without it the e2e checks that api.x.ai rejects the unauthenticated call (`needs key`) |
+| `XAI_MODEL` | env | Overrides the default model in generated digest apps |
+| `GITHUB_TOKEN` | env | GitHub API access for the generated apps' GitHub lookups/tests |
+| `FORGE_TOKEN` | repo secret | Fine-grained PAT owned by Blockchains; needed by the **compose app** workflow to create repos |
+| `FORGE_INDEX` | env (tests) | Overrides the grokhack-index URL used by `tests/` |
+
+`--create` needs `gh` authenticated as Blockchains; `gitleaks` runs before every push.
+
+## Contributing
+
+Issues and pull requests are welcome. Please read the [contributing guide](https://github.com/Blockchains/.github/blob/main/CONTRIBUTING.md), [code of conduct](https://github.com/Blockchains/.github/blob/main/CODE_OF_CONDUCT.md) and [security policy](https://github.com/Blockchains/.github/blob/main/SECURITY.md) first.
+
+---
+Built by Blockchain Lab — [blockchainlab.com](https://blockchainlab.com/?utm_source=github&utm_medium=readme&utm_campaign=grokhack-forge)

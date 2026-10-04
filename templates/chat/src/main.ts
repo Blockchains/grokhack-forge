@@ -19,7 +19,7 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
 </section>
 <main id="log"></main>
 <form id="form"><textarea id="prompt" rows="3" placeholder="Ask Grok..."></textarea><button id="send">Send</button><button id="stop" type="button" disabled>Stop</button></form>
-<footer>Composed by <a href="https://grokhack.com/forge">grokhack.com /forge</a> from indexed Grok integration parts: see <a href="${FORGE.repoUrl}/blob/main/PARTS.md">PARTS.md</a>.
+<footer>Composed by <a href="https://github.com/Blockchains/grokhack-forge">grokhack-forge</a> from indexed Grok integration parts: see <a href="${FORGE.repoUrl}/blob/main/PARTS.md">PARTS.md</a>.
 Your key is sent only to <code>api.x.ai</code> from this browser; it is never sent to GitHub or any other server.</footer>`
 
 const history: ModelMessage[] = []
