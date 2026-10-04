@@ -1,0 +1,26 @@
+# grokhack-forge
+
+> Composer for Grok apps: turns an app idea into a working repo (archetype `chat`: Vite + Vercel AI SDK @ai-sdk/xai with streaming and tools; archetype `digest`: Python xai-sdk with structured output on a schedule) using parts from grokhack-index, with CI that makes a real api.x.ai request and a GitHub Pages deploy.
+
+## Docs
+
+- [README](https://raw.githubusercontent.com/Blockchains/grokhack-forge/main/README.md): overview, install and the 'Use as a building block' section
+- [AGENTS.md](https://raw.githubusercontent.com/Blockchains/grokhack-forge/main/AGENTS.md): setup, build/test commands, structure map, conventions and rules for AI coding agents
+- [blocks.json](https://raw.githubusercontent.com/Blockchains/grokhack-forge/main/blocks.json): machine-readable building-block manifest (entrypoints, inputs, outputs, deps, compatible blocks)
+
+## Key files
+
+- [forge/compose.py](https://github.com/Blockchains/grokhack-forge/blob/main/forge/compose.py): composer
+- [templates/chat/src/tools.ts](https://github.com/Blockchains/grokhack-forge/blob/main/templates/chat/src/tools.ts): tool extension point
+- [templates/chat/src/grok.ts](https://github.com/Blockchains/grokhack-forge/blob/main/templates/chat/src/grok.ts): streaming chat over @ai-sdk/xai
+
+## Related
+
+- [Build with Blocks](https://github.com/Blockchains/.github/blob/main/docs/BUILD-WITH-BLOCKS.md): how to assemble projects from Blockchains repos
+- [Org llms.txt](https://blockchains.github.io/llms.txt) · [blocks catalogue](https://blockchains.github.io/blocks.json)
+- [Blockchains/grokhack-index](https://github.com/Blockchains/grokhack-index): parts source: SDK package versions at indexed fork commits, default model, reference snippets
+- [Blockchains/blockchainlab-mcp](https://github.com/Blockchains/blockchainlab-mcp): give the app's developer agent blockchain tools, or port tools into the app
+- [Blockchains/blockchainlab-sdk](https://github.com/Blockchains/blockchainlab-sdk): typed data calls as Grok tools inside a chat app (Build with Blocks recipe 2)
+- [Blockchains/grok-tools-chat](https://github.com/Blockchains/grok-tools-chat): reference chat output
+- [Blockchains/grok-release-radar](https://github.com/Blockchains/grok-release-radar): reference digest output
+- [Blockchains/awesome-grokhack](https://github.com/Blockchains/awesome-grokhack): the forks behind the index

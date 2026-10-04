@@ -1,0 +1,119 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Blockchains/.github/main/docs/blocks.schema.json",
+  "schema_version": "1.0",
+  "name": "grokhack-forge",
+  "repo": "Blockchains/grokhack-forge",
+  "summary": "Composer for Grok apps: turns an app idea into a working repo (archetype `chat`: Vite + Vercel AI SDK @ai-sdk/xai with streaming and tools; archetype `digest`: Python xai-sdk with structured output on a schedule) using parts from grokhack-index, with CI that makes a real api.x.ai request and a GitHub Pages deploy.",
+  "kind": [
+    "cli",
+    "github-action",
+    "template"
+  ],
+  "stability": "beta",
+  "license": "MIT",
+  "entrypoints": [
+    {
+      "type": "cli",
+      "name": "forge/compose.py",
+      "ref": "forge/compose.py",
+      "usage": "python3 forge/compose.py --idea \"<idea>\" --name <app> [--out DIR] [--index DIR|URL] [--create --wait]"
+    },
+    {
+      "type": "github-action",
+      "name": "compose app",
+      "ref": ".github/workflows/compose.yml",
+      "usage": "workflow_dispatch inputs: idea, name, request_id → results/<request_id>.json"
+    },
+    {
+      "type": "file",
+      "name": "templates/chat, templates/digest",
+      "ref": "templates/",
+      "usage": "app templates the composer fills in"
+    }
+  ],
+  "inputs": [
+    {
+      "name": "--idea",
+      "type": "string"
+    },
+    {
+      "name": "--name",
+      "type": "string"
+    },
+    {
+      "name": "--index",
+      "type": "dir or URL",
+      "description": "grokhack-index data (published index by default)"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "app repo",
+      "type": "directory",
+      "description": "src/ (chat) or app/ (digest), tests, scripts/e2e, PARTS.md, forge.json, CI, Pages workflow"
+    },
+    {
+      "name": "compose result",
+      "type": "JSON on stdout",
+      "description": "parts used, archetype, dir/URL"
+    }
+  ],
+  "deps": [
+    "python>=3.10 (stdlib only)",
+    "node>=20 for chat apps",
+    "gh for --create"
+  ],
+  "compatible_with": [
+    {
+      "repo": "Blockchains/grokhack-index",
+      "how": "parts source: SDK package versions at indexed fork commits, default model, reference snippets"
+    },
+    {
+      "repo": "Blockchains/blockchainlab-mcp",
+      "how": "give the app's developer agent blockchain tools, or port tools into the app"
+    },
+    {
+      "repo": "Blockchains/blockchainlab-sdk",
+      "how": "typed data calls as Grok tools inside a chat app (Build with Blocks recipe 2)"
+    },
+    {
+      "repo": "Blockchains/grok-tools-chat",
+      "how": "reference chat output"
+    },
+    {
+      "repo": "Blockchains/grok-release-radar",
+      "how": "reference digest output"
+    },
+    {
+      "repo": "Blockchains/awesome-grokhack",
+      "how": "the forks behind the index"
+    }
+  ],
+  "tests": {
+    "command": "python3 -m unittest discover -s tests -v",
+    "ci": ".github/workflows/ci.yml",
+    "network": true
+  },
+  "env": [
+    {
+      "name": "XAI_API_KEY",
+      "required": false,
+      "purpose": "generated apps' live e2e; without it the e2e checks api.x.ai rejects the unauthenticated call"
+    },
+    {
+      "name": "XAI_MODEL",
+      "required": false,
+      "purpose": "override the default model in digest apps"
+    },
+    {
+      "name": "FORGE_TOKEN",
+      "required": false,
+      "purpose": "repo secret; lets the Action create repos"
+    }
+  ],
+  "docs": {
+    "readme": "README.md",
+    "agents": "AGENTS.md",
+    "llms": "llms.txt"
+  }
+}
