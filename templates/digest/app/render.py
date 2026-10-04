@@ -12,6 +12,8 @@ def render(collected: dict, digest: dict, cfg: dict, out: str = "site") -> str:
         top = f'<section class="ok"><h2>Grok overview</h2><p>{e(digest["digest"]["overview"])}</p><p class="mut">model {e(digest["model"])} · {e(digest["generated_at"])}</p></section>'
     elif digest.get("status") == "needs_key":
         top = f'<section class="warn"><h2>AI summary: needs key</h2><p>{e(digest["message"])} The release list below is real GitHub data and refreshes daily without a key.</p></section>'
+    elif digest.get("status") == "credits_needed":
+        top = f'<section class="warn"><h2>AI summary: xAI credits needed</h2><p>{e(digest["message"])} The release list below is real GitHub data and refreshes daily.</p></section>'
     else:
         top = f'<section class="mut"><p>{e(digest.get("message", ""))}</p></section>'
     rows = []

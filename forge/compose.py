@@ -174,6 +174,8 @@ def compose(idea: str, name: str, index: str, out: str, owner: str, title: str |
 - Default model `{chosen['default_model']}`
 
 ## Keys
+If api.x.ai answers 403 because the xAI account is out of credits or over its spending limit, the app shows an **xAI credits needed** notice; outputs are never faked.
+
 {'Visitors paste their own xAI API key in the page. CI runs an end-to-end request against api.x.ai: with the `XAI_API_KEY` repository secret it checks a live answer, without it it checks that api.x.ai rejects the unauthenticated call (needs key).' if plan['archetype']=='chat' else 'Add the `XAI_API_KEY` repository secret to enable Grok summaries. Without it the page still publishes the real GitHub release data and shows a clear "needs key" notice instead of a summary.'}
 
 ## Run locally

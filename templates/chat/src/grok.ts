@@ -93,3 +93,9 @@ export function describeError(e: unknown): string {
   }
   return String(any?.message ?? e).slice(0, 300)
 }
+
+/** True when api.x.ai says the key is fine but the account is out of credits / over its spending limit (HTTP 403). */
+export function isCreditsError(message: string): boolean {
+  return /credits|spending limit|used all available|insufficient_quota|billing/i.test(message)
+}
+export const CREDITS_NOTICE = 'xAI credits needed: your API key works, but the xAI account has no credits left or reached its monthly spending limit. Add credits at https://console.x.ai and try again.'

@@ -14,6 +14,9 @@ try:
 except Exception as e:  # grpc.RpcError
     msg = f"{type(e).__name__}: {getattr(e, 'code', lambda: '')()} {getattr(e, 'details', lambda: str(e))()}"
     if key:
+        low = msg.lower()
+        if any(k in low for k in ("credits", "spending limit", "used all available", "billing")):
+            print("CREDITS NEEDED (live): api.x.ai accepted the key but the account has no credits / hit its spending limit ->", msg[:200]); sys.exit(0)
         print("FAIL (live):", msg[:300]); sys.exit(1)
     if any(s in msg for s in ("UNAUTHENTICATED", "PERMISSION_DENIED", "INVALID_ARGUMENT", "API key", "api key")):
         print("PASS (needs key): api.x.ai rejected the unauthenticated request as expected ->", msg[:160]); sys.exit(0)

@@ -1,5 +1,5 @@
 import type { ModelMessage } from 'ai'
-import { chat, listModels } from './grok.ts'
+import { chat, listModels, isCreditsError, CREDITS_NOTICE } from './grok.ts'
 import { FORGE } from './forge.config.ts'
 import './style.css'
 
@@ -74,7 +74,7 @@ $('#form').addEventListener('submit', async (ev) => {
       else if (e.type === 'tool-call') meta(out, `tool call: ${e.name}(${JSON.stringify(e.input)})`)
       else if (e.type === 'tool-result') meta(out, `tool result: ${JSON.stringify(e.output).slice(0, 300)}`)
       else if (e.type === 'source') meta(out, `source: <a href="${e.url}" target="_blank" rel="noopener">${escapeHtml(e.title ?? e.url)}</a>`, true)
-      else if (e.type === 'error') { out.classList.add('error'); meta(out, e.message) }
+      else if (e.type === 'error') { out.classList.add('error'); meta(out, isCreditsError(e.message) ? `${CREDITS_NOTICE} (${e.message.slice(0, 160)})` : e.message) }
       else if (e.type === 'done' && e.usage) meta(out, `usage: ${JSON.stringify(e.usage)}`)
     }
     if (acc) history.push({ role: 'assistant', content: acc })

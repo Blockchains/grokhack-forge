@@ -19,3 +19,9 @@ test('githubRepo returns live stats from the GitHub API', async () => {
   assert.equal(r.full_name, 'xai-org/xai-sdk-python')
   assert.ok(typeof r.stars === 'number' && r.stars > 0)
 })
+
+test('credits-exhausted 403 from api.x.ai is recognised (shown as "xAI credits needed")', async () => {
+  const { isCreditsError } = await import('../src/grok.ts')
+  assert.ok(isCreditsError('xAI API 403: Your team has either used all available credits or reached its monthly spending limit.'))
+  assert.ok(!isCreditsError('xAI API 400: Incorrect API key provided.'))
+})
