@@ -52,6 +52,23 @@ def model_key(m: str):
     v = re.match(r"grok-(\d+(?:\.\d+)?)", m)
     return float(v.group(1)) if v else 0.0
 
+PREFERRED_LIVE = ("grok-4.7", "grok-4.5")
+
+def live_models() -> list[str]:
+    """GET https://api.x.ai/v1/models with XAI_API_KEY from the environment (never logged). [] without a key or on error."""
+    key = os.environ.get("XAI_API_KEY", "").strip()
+    if not key:
+        return []
+    try:
+        req = urllib.request.Request("https://api.x.ai/v1/models", headers={"Authorization": f"Bearer {key}"})
+        with urllib.request.urlopen(req, timeout=20) as r:
+            ids = [m.get("id") for m in json.loads(r.read().decode()).get("data", [])]
+        log("live models:", ", ".join(i for i in ids if i))
+        return [i for i in ids if i]
+    except Exception as e:
+        log("live model list unavailable:", type(e).__name__)
+        return []
+
 def pick_models(shard: dict) -> tuple[str, list[str]]:
     general = [m for m in shard.get("models", {}) if re.fullmatch(r"grok-\d+(\.\d+)?", m)]
     if not general:
@@ -73,6 +90,11 @@ def choose_parts(index: str, plan: dict) -> dict:
     sdk_ts = next(p for p in parts if p["type"] == "package" and p.get("name") == "@ai-sdk/xai")
     official = shard_of(sdk_py["repo"])
     default_model, models = pick_models(official)
+    live = live_models()
+    if live:  # composer has a key: prefer the newest live model the account can use (grok-4.7, then grok-4.5)
+        for m in PREFERRED_LIVE:
+            if m in live:
+                default_model = m; break
     lang = {"digest": "Python", "chat": "TypeScript"}[plan["archetype"]]
     need = set(plan["capabilities"]) - {"scheduled"}
     snippets = [p for p in parts if p["type"] == "code-snippet" and p.get("lang") in (lang, "JavaScript" if lang == "TypeScript" else lang)]
@@ -150,7 +172,7 @@ def compose(idea: str, name: str, index: str, out: str, owner: str, title: str |
              f"- `{chosen['sdk']['name']}` {chosen['sdk'].get('version') or ''} from "
              f"[{chosen['sdk']['repo']}](https://github.com/{chosen['sdk']['repo']}/tree/{chosen['sdk']['commit']}/{os.path.dirname(chosen['sdk']['path'])}) "
              f"(upstream {chosen['sdk']['upstream']}, licence {chosen['sdk']['license']})", "",
-             f"Default model `{chosen['default_model']}`: newest general `grok-N.M` model referenced in "
+             f"Default model `{chosen['default_model']}`" + (" (newest model live on the composer's xAI account via `GET /v1/models`; preference grok-4.7, then grok-4.5). Newest general `grok-N.M` model referenced in the index: " if chosen['default_model'] not in chosen['index_models'] else ": newest general `grok-N.M` model referenced in ") +
              f"[{chosen['model_source']['repo']}@{chosen['model_source']['commit'][:7]}](https://github.com/{chosen['model_source']['repo']}/tree/{chosen['model_source']['commit']}). "
              "Override with `XAI_MODEL` (digest) or the model picker (chat, live list from `GET /v1/language-models`).", "",
              "## Reference implementations consulted (not copied; links pinned to the indexed commit)", ""]
