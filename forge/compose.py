@@ -189,7 +189,7 @@ def compose(idea: str, name: str, index: str, out: str, owner: str, title: str |
 
 {idea}
 
-**Live:** https://{owner.lower()}.github.io/{name}/ · composed by [grokhack-forge](https://github.com/Blockchains/grokhack-forge) · parts: [PARTS.md](PARTS.md) · manifest: [forge.json](forge.json)
+**Live:** https://{owner.lower()}.github.io/{name}/ · composed by [grokhack-forge](https://github.com/Blockchains/grokhack-forge) · parts: [PARTS.md](PARTS.md) · manifest: [forge.json](forge.json) · for AI agents: [AGENTS.md](AGENTS.md), [llms.txt](llms.txt), [blocks.json](blocks.json)
 
 - Archetype: `{plan['archetype']}` · capabilities: {', '.join(plan['capabilities'])}
 - Grok via {'Vercel AI SDK `@ai-sdk/xai` (browser, bring-your-own key; the key only goes to api.x.ai)' if plan['archetype']=='chat' else 'the official `xai-sdk` (gRPC) with structured output, run daily by GitHub Actions'}
@@ -210,6 +210,9 @@ Never commit keys; use `.env` (git-ignored) or repository secrets.
 MIT for the generated glue code. Dependencies keep their own licences (see PARTS.md).
 """
     open(os.path.join(out, "README.md"), "w").write(readme)
+    if HERE not in sys.path: sys.path.insert(0, HERE)
+    import agentdocs  # forge/agentdocs.py: AGENTS.md, llms.txt, blocks.json derived from the generated app
+    agentdocs.write(out, manifest, title, owner, name)
     year = dt.date.today().year
     open(os.path.join(out, "LICENSE"), "w").write(f"""MIT License
 

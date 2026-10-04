@@ -17,12 +17,17 @@ jobs:
         with: { python-version: "3.12" }
       - uses: actions/setup-node@v4
         with: { node-version: 22 }
+      - run: pip install -q jsonschema   # blocks.json schema validation in the tests
       - name: Unit tests (real index from Blockchains/grokhack-index)
         run: python3 -m unittest discover -s tests -v
       - name: Compose a chat app and a digest app (no repo creation)
         run: |
           python3 forge/compose.py --idea "A chat assistant that can look up GitHub repos and do maths with tools" --name ci-chat --out /tmp/ci-chat
           python3 forge/compose.py --idea "A daily digest of new releases across Grok integrations" --name ci-digest --out /tmp/ci-digest
+          for d in /tmp/ci-chat /tmp/ci-digest; do
+            test -s $d/AGENTS.md && test -s $d/llms.txt
+            python3 -c "import json,sys;sys.path.insert(0,'forge');import agentdocs;e=agentdocs.validate(json.load(open('$d/blocks.json')));print('$d/blocks.json',e or 'valid');sys.exit(1 if e else 0)"
+          done
       - name: Build + test the generated chat app (incl. real api.x.ai e2e)
         working-directory: /tmp/ci-chat
         env: { XAI_API_KEY: "${{ secrets.XAI_API_KEY }}" }

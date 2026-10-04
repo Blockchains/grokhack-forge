@@ -62,7 +62,7 @@ cd /tmp/defi-grok-chat && npm ci && npm run build && npm test     # add tools in
 **Inputs → outputs**
 
 - In: `--idea` (string); `--name` (string); `--index` (dir or URL) grokhack-index data (published index by default)
-- Out: `app repo` (directory) src/ (chat) or app/ (digest), tests, scripts/e2e, PARTS.md, forge.json, CI, Pages workflow; `compose result` (JSON on stdout) parts used, archetype, dir/URL
+- Out: `app repo` (directory) src/ (chat) or app/ (digest), tests, scripts/e2e, PARTS.md, forge.json, AGENTS.md, llms.txt, schema-valid blocks.json, CI, Pages workflow; `compose result` (JSON on stdout) parts used, archetype, dir/URL
 
 **Composes with**
 

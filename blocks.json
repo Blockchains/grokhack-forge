@@ -50,7 +50,7 @@
     {
       "name": "app repo",
       "type": "directory",
-      "description": "src/ (chat) or app/ (digest), tests, scripts/e2e, PARTS.md, forge.json, CI, Pages workflow"
+      "description": "src/ (chat) or app/ (digest), tests, scripts/e2e, PARTS.md, forge.json, AGENTS.md, llms.txt, schema-valid blocks.json, CI, Pages workflow"
     },
     {
       "name": "compose result",
@@ -61,7 +61,8 @@
   "deps": [
     "python>=3.10 (stdlib only)",
     "node>=20 for chat apps",
-    "gh for --create"
+    "gh for --create",
+    "jsonschema (tests only: validates generated blocks.json)"
   ],
   "compatible_with": [
     {
